@@ -4,10 +4,23 @@ import TransFormEl from '../base/TransFormEl'
 import Scroll from '../base/Scroll'
 import SongList from '../base/songList/SongList'
 import LoadingPage from '../base/LoadingPage'
+import { useDispatch } from 'react-redux'
+import { selectPlay, randmPlay } from '../../redux/commonSlice'
+// import Player from '../player/Player'
+// import { useSelector } from 'react-redux'
 
 function MusicList(props) {
     let { songs, pic, title, loading } = props
     const RESERVED_HEIGHT = 40
+
+    const dispatch = useDispatch()
+
+    // const count = useSelector((state) => {
+    //     console.log('sdd', state);
+    // })
+
+   
+
     const bgImage = useRef(null)
     const maxTransLateY = useRef(0)
     const [path, setPath] = useState('')
@@ -67,6 +80,15 @@ function MusicList(props) {
     const onScroll = (pos) => {
         setScrollY(-pos.y)
     }
+
+    const selectItem = ({ song, index }) => {
+        dispatch(selectPlay({ songs, index }))
+        // console.log(this);
+    }
+
+    const random = () => {
+        dispatch(randmPlay({ songs }))
+    }
     
     return (
         <TransFormEl pathVal = { path }>
@@ -81,7 +103,7 @@ function MusicList(props) {
                         <div className='play-btn-wrapper'>
                             {
                                 songs.length ?
-                                <div className='play-btn'>
+                                <div className='play-btn' onClick={ random }>
                                     <i className='icon-play'></i>
                                     <span className='text'>随机播放全部</span>
                                 </div>: null
@@ -99,10 +121,11 @@ function MusicList(props) {
                         scroll = { onScroll }
                     >
                         <div className='song-list-wrapper'>
-                            <SongList songs={ songs }></SongList>
+                            <SongList songs={ songs } select={ selectItem }></SongList>
                         </div>
                     </Scroll>
                 </LoadingPage>
+                {/* <Player></Player> */}
             </div>
         </TransFormEl>
     )
